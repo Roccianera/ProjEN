@@ -1,18 +1,16 @@
-import { createTheme } from "@mui/material/styles";
-import { red } from "@mui/material/colors";
+import { createTheme, ThemeOptions } from "@mui/material/styles";
 
-const theme = createTheme({
-  cssVariables: true,
+const theme :ThemeOptions = createTheme({
   palette: {
+    mode: 'dark',
     primary: {
-      main: "#556cd6",
+      main: '#ffffff',
+      light: '#000000',
     },
     secondary: {
-      main: "#19857b",
+      main: '#f50057',
     },
-    error: {
-      main: red.A400,
-    },
+  
   },
 });
 
