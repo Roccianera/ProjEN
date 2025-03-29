@@ -1,0 +1,14 @@
+services:
+  db:
+    image: postgres
+    restart: always
+    shm_size: 128mb
+    environment:
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_USER: myuser
+      POSTGRES_DB: projen-dev
+    volumes:
+      - Projen-volume:/var/lib/postgresql/data  # Usa il volume personalizzato
+
+volumes:
+  Projen-volume: 
