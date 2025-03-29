@@ -2,7 +2,6 @@ package com.projen.backend.model;
 
 import java.time.LocalDate;
 
-import org.springframework.cglib.core.Local;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
