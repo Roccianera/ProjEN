@@ -28,8 +28,8 @@ import AssignmentIcon from "@mui/icons-material/Assignment";
 import PeopleIcon from "@mui/icons-material/People";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { DarkMode } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
 
-import { useEffect } from "react";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -72,7 +72,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 const NavItem = styled(Button)(({ theme }) => ({
   marginLeft: theme.spacing(2),
-  color: theme.palette.common.white,
+  color: theme.palette.mode === "light" ? "#000" : "#fff",
   "&:hover": {
     backgroundColor: "rgba(255, 255, 255, 0.1)",
   },
@@ -84,16 +84,22 @@ const NavBar = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [darkMode, setDarkMode] = useState(false);
+  const navigate = useNavigate();
 
   const navItems = [
-    { text: "Dashboard", icon: <DashboardIcon />  },
-    { text: "Projects", icon: <AssignmentIcon /> },
-    { text: "Team", icon: <PeopleIcon /> },
-    { text: "DarkMode", icon: <DarkMode></DarkMode> , onClick: () => setDarkMode(!darkMode) },
-    { text: "Settings", icon: <SettingsIcon /> },
+    { text: "Dashboard", icon: <DashboardIcon />, onClick: () => navigate("/dashboard") },
+    { text: "Projects", icon: <AssignmentIcon />, onClick: () => console.log("Projects clicked") },
+    { text: "Team", icon: <PeopleIcon />, onClick: () => console.log("Team clicked") },
+    { text: "DarkMode", icon: <DarkMode />, onClick: () => handleDarkMode()},
+    { text: "Settings", icon: <SettingsIcon />, onClick: () => console.log("Settings clicked") },
   ];
 
-  
+
+  const handleDarkMode =()=>{
+    setDarkMode(!darkMode);
+    console.log(theme.palette.mode);
+    theme.palette.mode = darkMode ? "light" : "dark";
+  }
 
 
 
@@ -119,7 +125,7 @@ const NavBar = () => {
       <List>
         {navItems.map((item) => (
           <ListItem  component="button" key={item.text} onClick={item.onClick} >
-            <Box sx={{ mr: 2 }}>{item.icon}</Box>
+            <Box     sx={{ mr: 2 }}>{item.icon}</Box>
             <ListItemText primary={item.text} />
           </ListItem>
         ))}
@@ -129,8 +135,11 @@ const NavBar = () => {
 
   return (
     <>
-      <AppBar position="static">
-        <Toolbar>
+      <AppBar position="static"  >
+        <Toolbar  >
+
+  
+          
           {isMobile && (
             <IconButton
               color="inherit"
@@ -167,7 +176,7 @@ const NavBar = () => {
           {!isMobile && (
             <Box sx={{ display: "flex" }}>
               {navItems.map((item) => (
-                <NavItem key={item.text} startIcon={item.icon}>
+                <NavItem key={item.text} startIcon={item.icon} onClick={item.onClick}>
                   {item.text}
                 </NavItem>
               ))}
@@ -213,7 +222,7 @@ const NavBar = () => {
             </Menu>
           </Box>
         </Toolbar>
-      </AppBar>
+      </AppBar >
 
       <Drawer
         variant="temporary"
