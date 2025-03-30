@@ -28,7 +28,6 @@ public class TaskProfile {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;
-    private String status;
     private String description;
     private LocalDate startDate;
     private LocalDate endDate;
