@@ -35,11 +35,12 @@ const StyledCard = styled(Card)(({ theme }) => ({
   textAlign: "center",
 }));
 
-function LoginPage() {
+function RegisterPage() {
   const theme = useTheme();
   const navigate = useNavigate();
-  const [password, setPassword] = React.useState<string>("");
   const [username, setUsername] = React.useState<string>("");
+  const [email, setEmail] = React.useState<string>("");
+  const [password, setPassword] = React.useState<string>("");
   const [error, setError] = React.useState<string>("");
   const [loading, setLoading] = React.useState<boolean>(false);
 
@@ -48,26 +49,30 @@ function LoginPage() {
       setError("Username is required.");
       return false;
     }
-    if (!password) {
-      setError("Password is required.");
+    if (!email || !/\S+@\S+\.\S+/.test(email)) {
+      setError("A valid email is required.");
+      return false;
+    }
+    if (!password || password.length < 6) {
+      setError("Password must be at least 6 characters long.");
       return false;
     }
     setError(""); // Clear any previous errors
     return true;
   };
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateForm()) return;
 
     setLoading(true);
     try {
-      console.log("Logging in user:", { username, password });
+      console.log("Registering user:", { username, email, password });
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 2000));
-      navigate("/dashboard"); // Redirect to dashboard after successful login
+      navigate("/login"); // Redirect to login page after successful registration
     } catch (err) {
-      setError("An error occurred during login. Please try again.");
+      setError("An error occurred during registration. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -81,7 +86,7 @@ function LoginPage() {
           gutterBottom
           color={theme.palette.text.primary}
         >
-          Login
+          Register
         </Typography>
         {error && (
           <Alert severity="error" sx={{ marginBottom: theme.spacing(2) }}>
@@ -92,7 +97,7 @@ function LoginPage() {
           component="form"
           noValidate
           autoComplete="off"
-          onSubmit={handleLogin}
+          onSubmit={handleRegister}
         >
           <TextField
             label="Username"
@@ -102,6 +107,15 @@ function LoginPage() {
             sx={{ marginBottom: theme.spacing(2) }}
             onChange={(e) => setUsername(e.target.value)}
             aria-label="Username"
+          />
+          <TextField
+            label="Email"
+            variant="outlined"
+            fullWidth
+            placeholder="Enter your email"
+            sx={{ marginBottom: theme.spacing(2) }}
+            onChange={(e) => setEmail(e.target.value)}
+            aria-label="Email"
           />
           <TextField
             label="Password"
@@ -129,4 +143,4 @@ function LoginPage() {
   );
 }
 
-export default LoginPage;
+export default RegisterPage;
