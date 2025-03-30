@@ -1,14 +1,16 @@
 package com.projen.backend.exception;
         
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.ValidationException;
+import java.time.LocalDateTime;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
-import java.time.LocalDateTime;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ValidationException;
 
 
 
@@ -40,6 +42,21 @@ public class DefaultExceptionhandler {
 
 
 
+        @ExceptionHandler(NoResourceFoundException.class)
+        public ResponseEntity<ApiError> handleNoResourceFoundException(NoResourceFoundException e , HttpServletRequest request){
+
+            ApiError apiError = new ApiError(
+                    request.getRequestURI(),
+                    e.getMessage(),
+                    HttpStatus.NOT_FOUND.value(),
+                    LocalDateTime.now()
+
+            );
+
+            return  new ResponseEntity<>(apiError,HttpStatus.NOT_FOUND);
+        }
+
+
 
 
 
@@ -69,7 +86,7 @@ public class DefaultExceptionhandler {
 
         );
 
-        System.out.println("Error Message ["+e.getMessage()+"]");
+        System.out.println("Error Message ["+e.getMessage()+"]" + "Error Class ["+e.getClass()+"]");
        // e.printStackTrace();
 
 

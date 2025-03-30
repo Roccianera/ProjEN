@@ -1,9 +1,12 @@
 
 package com.projen.backend.dto;
 
+import java.util.List;
 
-record TaskCategoryRequestDto(
+
+public record TaskCategoryRequestDto(
         Long id,
-        String name
+        String name,
+        List<TaskRequestDto> tasks
 ) {
 }

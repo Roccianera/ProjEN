@@ -9,15 +9,11 @@ import java.time.LocalDate;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-import jakarta.validation.constraints.NotBlank;
 
 public record TaskResponseDto(
         Long id,
-        @NotBlank(message = "Task name is required")
         String name,
-        @NotBlank(message = "Task description is required")
         String description,
-
         Boolean isCompleted,
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
         LocalDate startDate,

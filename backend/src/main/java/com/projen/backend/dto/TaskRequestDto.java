@@ -19,5 +19,6 @@ public record TaskRequestDto(
         String description,
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
         LocalDate endDate
+        
 ) {
 }

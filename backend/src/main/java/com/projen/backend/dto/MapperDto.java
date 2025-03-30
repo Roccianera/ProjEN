@@ -21,7 +21,7 @@ public class MapperDto {
                 project.getStartDate(),
                 project.getEndDate(),
                 project.getIsCompleted(),
-                null // Assuming you will handle task categories separately
+                null //TODO
         );
     }
     public Project mapToProject(ProjectRequestDto projectRequestDto) {
@@ -38,7 +38,7 @@ public class MapperDto {
         return new TaskCategoryRequestDto(
                 taskCategory.getId(),
                 taskCategory.getName(),
-                null // Assuming you will handle tasks separately
+                null //TODO
         );
     }
     public TaskCategory mapToTaskCategory(TaskCategoryRequestDto taskCategoryRequestDto) {
@@ -60,10 +60,21 @@ public class MapperDto {
         return Task.builder()
                 .name(taskRequestDto.name())
                 .taskProfile(taskProfile)
-                
                 .build();
     }
 
+    public TaskResponseDto mapToTaskResponseDto(Task task) {
+        return new TaskResponseDto(
+                task.getId(),
+                task.getName(),
+                task.getTaskProfile().getDescription(),
+                task.getTaskProfile().getIsCompleted(),
+                task.getTaskProfile().getStartDate(),
+                task.getTaskProfile().getEndDate()
+        );
+    }
+
+    
    
 
 
