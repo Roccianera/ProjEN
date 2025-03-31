@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 
 
 @Entity
-@Table(name = "_task")
+@Table(name = "_taskCategory")
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder

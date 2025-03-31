@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 
 
 @Entity
-@Table(name = "_task")
+@Table(name = "_project")
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -46,9 +46,10 @@ public class Project {
     private Boolean isCompleted;
 
 
-
-    @OneToMany(mappedBy = "project" ,cascade = CascadeType.ALL, orphanRemoval = true,fetch=FetchType.LAZY)
+//TODO Levato Lazy
+    @OneToMany(mappedBy = "project" ,cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TaskCategory> TaskCategories; 
+
 
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)

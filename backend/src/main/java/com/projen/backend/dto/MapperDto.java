@@ -1,6 +1,7 @@
 package com.projen.backend.dto;
 
 import java.time.LocalDate;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -21,7 +22,8 @@ public class MapperDto {
                 project.getStartDate(),
                 project.getEndDate(),
                 project.getIsCompleted(),
-                null //TODO
+                project.getTaskCategories().stream().map((taskCategory) -> mapToTaskCategoryResponseDto(taskCategory)
+                ).collect(Collectors.toList())
         );
     }
     public Project mapToProject(ProjectRequestDto projectRequestDto) {
@@ -30,20 +32,25 @@ public class MapperDto {
                 .name(projectRequestDto.name())
                 .description(projectRequestDto.description())
                 .endDate(projectRequestDto.endDate())
+                .startDate(LocalDate.now())
+                .isCompleted(false)
+                .TaskCategories(
+                projectRequestDto.taskCategories().stream().map(taskCategoryRequestDto -> mapToTaskCategory(taskCategoryRequestDto)
+                ).collect(Collectors.toList())
+
+                )
                 .build();
 
     }
 
-    public  TaskCategoryRequestDto mapToTaskCategoryRequestDto(TaskCategory taskCategory) {
-        return new TaskCategoryRequestDto(
-                taskCategory.getId(),
-                taskCategory.getName(),
-                null //TODO
-        );
+    public  TaskCategoryResponseDto mapToTaskCategoryResponseDto(TaskCategory taskCategory) {
+        return new TaskCategoryResponseDto(taskCategory.getId(), taskCategory.getName(),
+         taskCategory.getTasks().stream().map(task->mapToTaskResponseDto(task)).collect(Collectors.toList()));
     }
     public TaskCategory mapToTaskCategory(TaskCategoryRequestDto taskCategoryRequestDto) {
         return TaskCategory.builder()
                 .name(taskCategoryRequestDto.name())
+                .tasks(taskCategoryRequestDto.tasks().stream().map(taskRequestDto->mapToTask(taskRequestDto)).collect(Collectors.toList()))
                 .build();
     }
 
@@ -71,6 +78,7 @@ public class MapperDto {
                 task.getTaskProfile().getIsCompleted(),
                 task.getTaskProfile().getStartDate(),
                 task.getTaskProfile().getEndDate()
+                
         );
     }
 

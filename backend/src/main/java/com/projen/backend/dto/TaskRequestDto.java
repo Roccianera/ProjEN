@@ -12,7 +12,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotBlank;
 
 public record TaskRequestDto(
-        Long id,
         @NotBlank(message = "Task name is required")
         String name,
         @NotBlank(message = "Task description is required")
