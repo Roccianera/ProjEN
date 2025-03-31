@@ -9,6 +9,7 @@ import jakarta.validation.constraints.NotBlank;
 
 public record ProjectRequestDto(
 
+
         @NotBlank(message = "Project name is required")
         String name,
         @NotBlank(message = "Project description is required")

@@ -3,6 +3,7 @@ package com.projen.backend.dto;
 import java.time.LocalDate;
 import java.util.stream.Collectors;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import com.projen.backend.model.Project;
@@ -58,7 +59,7 @@ public class MapperDto {
                 .name(taskCategoryRequestDto.name())
                 .tasks(taskCategoryRequestDto.tasks().stream().map(taskRequestDto->mapToTask(taskRequestDto)).collect(Collectors.toList()))
                 .build();
-
+                
 
         for (Task   task : taskCategory.getTasks()) {
 
@@ -94,7 +95,6 @@ public class MapperDto {
         );
     }
 
-    
    
 
 

@@ -31,11 +31,13 @@ public class TaskCategory {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;
-
+    
+    
 
     
     @OneToMany(mappedBy = "taskCategory" ,cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Task> tasks; 
+
 
     @ManyToOne
     @JoinColumn(name = "project_id", nullable = false)
