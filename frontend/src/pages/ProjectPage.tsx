@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Typography,
@@ -13,6 +13,12 @@ import {
   AvatarGroup,
   Tab,
   Tabs,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import {
@@ -87,7 +93,6 @@ const mockProject: ProjectDetails = {
       name: "Jane Smith",
       avatar: "https://mui.com/static/images/avatar/2.jpg",
     },
-    // Add more team members
   ],
   categories: ["Frontend", "Backend", "Design", "Testing"],
   tasks: [
@@ -100,130 +105,203 @@ const mockProject: ProjectDetails = {
       category: "Design",
       dueDate: "2024-04-15",
     },
-    // Add more tasks
+    {
+      id: 2,
+      title: "API Development",
+      description: "Develop RESTful APIs for the backend",
+      status: "in_progress",
+      assignee: "John Doe",
+      category: "Backend",
+      dueDate: "2024-05-10",
+    },
   ],
 };
 
 function ProjectPage() {
-  const [currentTab, setCurrentTab] = React.useState(0);
+  const [currentTab, setCurrentTab] = useState(0);
+  const [tasks, setTasks] = useState<Task[]>(mockProject.tasks);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [editingTask, setEditingTask] = useState<Task | null>(null);
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setCurrentTab(newValue);
   };
 
   const getTasksByCategory = (category: string) => {
-    return mockProject.tasks.filter((task) => task.category === category);
+    return tasks.filter((task) => task.category === category);
+  };
+
+  const handleOpenDialog = (task: Task | null = null) => {
+    setEditingTask(task);
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setEditingTask(null);
+    setOpenDialog(false);
+  };
+
+  const handleSaveTask = () => {
+    if (editingTask) {
+      // Update existing task
+      setTasks((prevTasks) =>
+        prevTasks.map((task) =>
+          task.id === editingTask.id ? editingTask : task
+        )
+      );
+    } else {
+      // Create new task
+      const newTask: Task = {
+        id: tasks.length + 1,
+        title: "New Task",
+        description: "Task description",
+        status: "todo",
+        assignee: "Unassigned",
+        category: mockProject.categories[currentTab],
+        dueDate: "2024-12-31",
+      };
+      setTasks((prevTasks) => [...prevTasks, newTask]);
+    }
+    handleCloseDialog();
+  };
+
+  const handleDeleteTask = (taskId: number) => {
+    setTasks((prevTasks) => prevTasks.filter((task) => task.id !== taskId));
   };
 
   return (
     <Box sx={{ maxWidth: 1200, margin: "0 auto", padding: 3 }}>
       {/* Project Header */}
       <StyledPaper>
-        <Grid container spacing={3}>
-          <Grid item xs={12} md={8}>
-            <Typography variant="h4" gutterBottom>
-              {mockProject.title}
-            </Typography>
-            <Typography variant="body1" color="text.secondary" paragraph>
-              {mockProject.description}
-            </Typography>
-            <Box sx={{ mb: 2 }}>
-              <Typography variant="subtitle2" gutterBottom>
-                Progress
-              </Typography>
-              <LinearProgress
-                variant="determinate"
-                value={mockProject.progress}
-                sx={{ height: 10, borderRadius: 5 }}
-              />
-            </Box>
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <Box sx={{ textAlign: "right" }}>
-              <Typography variant="subtitle2">Team Members</Typography>
-              <AvatarGroup max={4}>
-                {mockProject.team.map((member) => (
-                  <Avatar
-                    key={member.id}
-                    alt={member.name}
-                    src={member.avatar}
-                  />
-                ))}
-              </AvatarGroup>
-            </Box>
-          </Grid>
-        </Grid>
+        <Typography variant="h4">{mockProject.title}</Typography>
+        <Typography variant="body1" color="text.secondary">
+          {mockProject.description}
+        </Typography>
       </StyledPaper>
 
-      {/* Tasks by Category */}
-      <Box sx={{ width: "100%", mt: 3 }}>
-        <Tabs
-          value={currentTab}
-          onChange={handleTabChange}
-          variant="scrollable"
-          scrollButtons="auto"
-        >
-          {mockProject.categories.map((category, index) => (
-            <Tab key={category} label={category} />
-          ))}
-        </Tabs>
-
+      {/* Tabs for Categories */}
+      <Tabs
+        value={currentTab}
+        onChange={handleTabChange}
+        variant="scrollable"
+        scrollButtons="auto"
+        sx={{ marginBottom: 3 }}
+      >
         {mockProject.categories.map((category, index) => (
-          <div key={category} role="tabpanel" hidden={currentTab !== index}>
-            {currentTab === index && (
-              <CategoryCard>
-                <CardContent>
-                  <Typography variant="h6" gutterBottom>
-                    {category} Tasks
-                  </Typography>
-                  <Timeline>
-                    {getTasksByCategory(category).map((task) => (
-                      <TimelineItem key={task.id}>
-                        <TimelineSeparator>
-                          <TimelineDot
+          <Tab key={category} label={category} />
+        ))}
+      </Tabs>
+
+      {/* Tasks by Category */}
+      {mockProject.categories.map((category, index) => (
+        <div key={category} hidden={currentTab !== index}>
+          {currentTab === index && (
+            <CategoryCard>
+              <CardContent>
+                <Typography variant="h6">{category} Tasks</Typography>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => handleOpenDialog()}
+                  sx={{ marginBottom: 2 }}
+                >
+                  Add Task
+                </Button>
+                <Timeline>
+                  {getTasksByCategory(category).map((task) => (
+                    <TimelineItem key={task.id}>
+                      <TimelineSeparator>
+                        <TimelineDot
+                          color={
+                            task.status === "completed"
+                              ? "success"
+                              : task.status === "in_progress"
+                              ? "primary"
+                              : "grey"
+                          }
+                        />
+                        <TimelineConnector />
+                      </TimelineSeparator>
+                      <TimelineContent>
+                        <Typography variant="subtitle1">
+                          {task.title}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          {task.description}
+                        </Typography>
+                        <Box sx={{ mt: 1 }}>
+                          <Chip
+                            size="small"
+                            label={task.status}
                             color={
                               task.status === "completed"
                                 ? "success"
                                 : task.status === "in_progress"
                                 ? "primary"
-                                : "grey"
+                                : "default"
                             }
                           />
-                          <TimelineConnector />
-                        </TimelineSeparator>
-                        <TimelineContent>
-                          <Typography variant="subtitle1">
-                            {task.title}
-                          </Typography>
-                          <Typography variant="body2" color="text.secondary">
-                            {task.description}
-                          </Typography>
-                          <Box sx={{ mt: 1 }}>
-                            <Chip
-                              size="small"
-                              label={task.status}
-                              color={
-                                task.status === "completed"
-                                  ? "success"
-                                  : task.status === "in_progress"
-                                  ? "primary"
-                                  : "default"
-                              }
-                            />
-                            <Typography variant="caption" sx={{ ml: 2 }}>
-                              Due: {task.dueDate}
-                            </Typography>
-                          </Box>
-                        </TimelineContent>
-                      </TimelineItem>
-                    ))}
-                  </Timeline>
-                </CardContent>
-              </CategoryCard>
-            )}
-          </div>
-        ))}
-      </Box>
+                          <Button
+                            size="small"
+                            color="secondary"
+                            onClick={() => handleOpenDialog(task)}
+                            sx={{ ml: 2 }}
+                          >
+                            Edit
+                          </Button>
+                          <Button
+                            size="small"
+                            color="error"
+                            onClick={() => handleDeleteTask(task.id)}
+                            sx={{ ml: 1 }}
+                          >
+                            Delete
+                          </Button>
+                        </Box>
+                      </TimelineContent>
+                    </TimelineItem>
+                  ))}
+                </Timeline>
+              </CardContent>
+            </CategoryCard>
+          )}
+        </div>
+      ))}
+
+      {/* Dialog for Adding/Editing Tasks */}
+      <Dialog open={openDialog} onClose={handleCloseDialog}>
+        <DialogTitle>{editingTask ? "Edit Task" : "Add New Task"}</DialogTitle>
+        <DialogContent>
+          <TextField
+            label="Title"
+            fullWidth
+            margin="normal"
+            value={editingTask?.title || ""}
+            onChange={(e) =>
+              setEditingTask((prev) =>
+                prev ? { ...prev, title: e.target.value } : null
+              )
+            }
+          />
+          <TextField
+            label="Description"
+            fullWidth
+            margin="normal"
+            value={editingTask?.description || ""}
+            onChange={(e) =>
+              setEditingTask((prev) =>
+                prev ? { ...prev, description: e.target.value } : null
+              )
+            }
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog}>Cancel</Button>
+          <Button onClick={handleSaveTask} variant="contained" color="primary">
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }
