@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import com.projen.backend.model.Project;
 import com.projen.backend.model.Task;
 import com.projen.backend.model.TaskCategory;
-import com.projen.backend.model.TaskProfile;
 
 @Service
 public class MapperDto {
@@ -28,7 +27,7 @@ public class MapperDto {
     }
     public Project mapToProject(ProjectRequestDto projectRequestDto) {
     
-        return Project.builder()
+        var project = Project.builder()
                 .name(projectRequestDto.name())
                 .description(projectRequestDto.description())
                 .endDate(projectRequestDto.endDate())
@@ -36,11 +35,18 @@ public class MapperDto {
                 .isCompleted(false)
                 .TaskCategories(
                 projectRequestDto.taskCategories().stream().map(taskCategoryRequestDto -> mapToTaskCategory(taskCategoryRequestDto)
-                ).collect(Collectors.toList())
-
+                )
+                .collect(Collectors.toList())
                 )
                 .build();
 
+        for (TaskCategory tCategory : project.getTaskCategories()) {
+
+                if(tCategory!=null)
+                tCategory.setProject(project);
+        }
+
+        return project;
     }
 
     public  TaskCategoryResponseDto mapToTaskCategoryResponseDto(TaskCategory taskCategory) {
@@ -48,25 +54,31 @@ public class MapperDto {
          taskCategory.getTasks().stream().map(task->mapToTaskResponseDto(task)).collect(Collectors.toList()));
     }
     public TaskCategory mapToTaskCategory(TaskCategoryRequestDto taskCategoryRequestDto) {
-        return TaskCategory.builder()
+        var taskCategory= TaskCategory.builder()
                 .name(taskCategoryRequestDto.name())
                 .tasks(taskCategoryRequestDto.tasks().stream().map(taskRequestDto->mapToTask(taskRequestDto)).collect(Collectors.toList()))
                 .build();
+
+
+        for (Task   task : taskCategory.getTasks()) {
+
+            if(task!=null)
+            task.setTaskCategory(taskCategory);
+        }
+
+        return taskCategory;
     }
 
     public Task mapToTask(TaskRequestDto taskRequestDto) {
 
-        var taskProfile= TaskProfile.builder().
-                isCompleted(false)
-                .name(taskRequestDto.name())
+        
+        return Task.builder()
+        .name(taskRequestDto.name())
+        
+        .isCompleted(false)
                 .description(taskRequestDto.description())
                 .startDate(LocalDate.now())
                 .endDate(taskRequestDto.endDate())
-                .build();
-
-        return Task.builder()
-                .name(taskRequestDto.name())
-                .taskProfile(taskProfile)
                 .build();
     }
 
@@ -74,10 +86,10 @@ public class MapperDto {
         return new TaskResponseDto(
                 task.getId(),
                 task.getName(),
-                task.getTaskProfile().getDescription(),
-                task.getTaskProfile().getIsCompleted(),
-                task.getTaskProfile().getStartDate(),
-                task.getTaskProfile().getEndDate()
+                task.getDescription(),
+                task.getIsCompleted(),
+                task.getStartDate(),
+                task.getEndDate()
                 
         );
     }

@@ -1,5 +1,7 @@
 package com.projen.backend.model;
 
+import java.time.LocalDate;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -27,11 +29,17 @@ public class Task {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;
+    private String description;
+    private LocalDate startDate;
+    private LocalDate endDate;
+    private Boolean isCompleted;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "task_profile_id", referencedColumnName = "id")
-    private TaskProfile taskProfile; // Assuming TaskProfile is another entity that has a one-to-one relationship with Task 
 
+
+
+
+    
     @ManyToOne
+    @JoinColumn(name = "task_categoty_id", nullable = false)
     private TaskCategory taskCategory; // Assuming TaskCategory is another entity that has a many-to-one relationship with Task
 }
