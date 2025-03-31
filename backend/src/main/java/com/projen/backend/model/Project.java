@@ -50,8 +50,8 @@ public class Project {
     @OneToMany(mappedBy = "project" ,cascade = CascadeType.ALL, orphanRemoval = true,fetch=FetchType.LAZY)
     private List<TaskCategory> TaskCategories; 
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
+    @ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
 
