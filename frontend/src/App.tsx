@@ -8,6 +8,10 @@ import HomePage from './pages/HomePage'
 import NotFoundPage from './pages/NotFoundPage'
 import NavBar from './Layout/NavBar'
 import ProjectPage from './pages/ProjectPage'
+import ProjectDetailsPage from './pages/ProjectDetailsPage'
+import Footer from './Layout/Footer'
+import Layout from './Layout/Layout'
+
 
 
 
@@ -15,8 +19,10 @@ function App() {
 
   return (
     <>
+      <Layout>
 
-      <NavBar/>
+
+
       <Routes>
         <Route path="*" element={<NotFoundPage/>} />
         <Route path="/" element={<LoginPage />} />
@@ -24,10 +30,11 @@ function App() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/home" element={<HomePage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
-        <Route path="/projects" element={<ProjectPage />} />
+        <Route path="/projects" element={<ProjectDetailsPage />} />
       </Routes>
 
 
+      </Layout>
     </>
   )
 }

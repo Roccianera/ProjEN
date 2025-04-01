@@ -3,9 +3,12 @@ package com.projen.backend.dto;
 import java.time.LocalDate;
 import java.util.stream.Collectors;
 
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.module.jsonSchema.JsonSchema;
+import com.fasterxml.jackson.module.jsonSchema.JsonSchemaGenerator;
 import com.projen.backend.model.Project;
 import com.projen.backend.model.Task;
 import com.projen.backend.model.TaskCategory;
@@ -94,6 +97,20 @@ public class MapperDto {
                 
         );
     }
+
+    public String jsonSchemaGenerator(Class<?>object) throws JsonProcessingException{
+
+        ObjectMapper objectMapper = new ObjectMapper();
+		 
+		JsonSchemaGenerator schemaGenerator= new JsonSchemaGenerator(objectMapper);
+		 
+		JsonSchema schema = schemaGenerator.generateSchema(ProjectRequestDto.class);
+		 
+		String jsonSchema = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(schema);
+		 
+		return jsonSchema;
+    }
+
 
    
 
