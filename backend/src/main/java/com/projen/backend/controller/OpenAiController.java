@@ -35,10 +35,9 @@ public class OpenAiController {
 
 
     @PostMapping("/project")
-    public ResponseEntity<?> postMethodName(@RequestBody String prompt) throws JsonProcessingException {
-        //TODO: process POST request
+    public ResponseEntity<?> createProject(@RequestBody String prompt) throws JsonProcessingException {
 
-
+        //TODO refactor.
         
         String schema = mapperDto.jsonSchemaGenerator(ProjectRequestDto.class);
         

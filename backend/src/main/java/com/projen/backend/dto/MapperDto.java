@@ -100,6 +100,7 @@ public class MapperDto {
 
     public String jsonSchemaGenerator(Class<?>object) throws JsonProcessingException{
 
+        //TODO refactor
         ObjectMapper objectMapper = new ObjectMapper();
 		 
 		JsonSchemaGenerator schemaGenerator= new JsonSchemaGenerator(objectMapper);

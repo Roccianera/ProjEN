@@ -39,7 +39,6 @@ public class PublicController {
        try {
         return mapperDto.jsonSchemaGenerator(ProjectRequestDto.class);
        } catch (JsonProcessingException e) {
-        // TODO Auto-generated catch block
         e.printStackTrace();
        }
         

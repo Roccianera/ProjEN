@@ -22,42 +22,57 @@ public class OpenAiService {
     public String  generateObjectFromPromptandSchema(String requesProject ,String schema){
 
 
-
-
-        String jsonSchema = """
-        {
-            "type": "object",
-            "properties": {
-                "steps": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "explanation": { "type": "string" },
-                            "output": { "type": "string" }
-                        },
-                        "required": ["explanation", "output"],
-                        "additionalProperties": false
-                    }
+        //TODO refactor
+        String jsonSchema2 = """
+            {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
                 },
-                "final_answer": { "type": "string" }
-            },
-            "required": ["steps", "final_answer"],
-            "additionalProperties": false
-        }
-        """;
-
-
-
-
-
-
-
+                "description": {
+                  "type": "string"
+                },
+                "taskCategories": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "tasks": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "name": {
+                              "type": "string"
+                            },
+                            "description": {
+                              "type": "string"
+                            }
+                          },
+                          "required": ["name", "description"],
+                          "additionalProperties": false
+                        }
+                      }
+                    },
+                    "required": ["name", "tasks"],
+                    "additionalProperties": false
+                  }
+                }
+              },
+              "required": ["name", "description", "taskCategories"],
+              "additionalProperties": false
+            }
+            """;
+            
 
         Prompt prompt = new Prompt(requesProject,
         OpenAiChatOptions.builder()
             .model(ChatModel.GPT_4_O_MINI)
-            .responseFormat(new ResponseFormat(ResponseFormat.Type.JSON_OBJECT,schema))
+            .responseFormat(new ResponseFormat(ResponseFormat.Type.JSON_SCHEMA,jsonSchema2))
             .build());
 
         ChatResponse response = chatModel.call(prompt);
