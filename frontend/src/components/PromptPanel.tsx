@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import CloseIcon from "@mui/icons-material/Close";
+import { AddCircle } from "@mui/icons-material";
 
 const PromptPanel = () => {
   const [open, setOpen] = useState(false);
@@ -38,7 +39,7 @@ const PromptPanel = () => {
         onClick={toggleDrawer(true)}
         sx={{ position: "fixed", right: 16, bottom: 16 }}
       >
-        Scrivi Prompt
+        <AddCircle></AddCircle>
       </Button>
 
       {/* Pannello laterale */}

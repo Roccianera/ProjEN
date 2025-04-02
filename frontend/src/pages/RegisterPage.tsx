@@ -30,7 +30,7 @@ const StyledCard = styled(Card)(({ theme }) => ({
   padding: theme.spacing(3),
   backgroundColor: theme.palette.background.paper,
   borderRadius: theme.shape.borderRadius,
-  boxShadow: theme.shadows[3],
+  boxShadow: (theme.shadows as string[])[3],
   minWidth: 300,
   textAlign: "center",
 }));

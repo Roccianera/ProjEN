@@ -14,19 +14,13 @@ import {
   Menu,
   MenuItem,
   useMediaQuery,
-  Badge,
   InputBase,
   Divider,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { styled } from "@mui/system";
 import MenuIcon from "@mui/icons-material/Menu";
-import SearchIcon from "@mui/icons-material/Search";
-import NotificationsIcon from "@mui/icons-material/Notifications";
 import DashboardIcon from "@mui/icons-material/Dashboard";
-import AssignmentIcon from "@mui/icons-material/Assignment";
-import PeopleIcon from "@mui/icons-material/People";
-import SettingsIcon from "@mui/icons-material/Settings";
 import { DarkMode } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 
@@ -88,10 +82,7 @@ const NavBar = () => {
 
   const navItems = [
     { text: "Dashboard", icon: <DashboardIcon />, onClick: () => navigate("/dashboard") },
-    { text: "Projects", icon: <AssignmentIcon />, onClick: () => console.log("Projects clicked") },
-    { text: "Team", icon: <PeopleIcon />, onClick: () => console.log("Team clicked") },
     { text: "DarkMode", icon: <DarkMode />, onClick: () => handleDarkMode()},
-    { text: "Settings", icon: <SettingsIcon />, onClick: () => console.log("Settings clicked") },
   ];
 
 
@@ -160,17 +151,8 @@ const NavBar = () => {
           >
             TaskMaster
           </Typography>
-
-          <Search>
-            <SearchIconWrapper>
-              <SearchIcon />
-            </SearchIconWrapper>
-            <StyledInputBase
-              placeholder="Search projects..."
-              inputProps={{ "aria-label": "search" }}
-            />
-          </Search>
-
+          
+          
           <Box sx={{ flexGrow: 1 }} />
 
           {!isMobile && (
@@ -184,11 +166,7 @@ const NavBar = () => {
           )}
 
           <Box sx={{ display: "flex", alignItems: "center" }}>
-            <IconButton color="inherit">
-              <Badge badgeContent={4} color="error">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton>
+     
 
             <IconButton
               size="large"
@@ -243,3 +221,4 @@ const NavBar = () => {
 };
 
 export default NavBar;
+

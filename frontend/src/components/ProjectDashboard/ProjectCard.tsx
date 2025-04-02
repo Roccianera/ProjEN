@@ -3,7 +3,7 @@ import { Card, Typography, Box, Chip, LinearProgress } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { styled } from "@mui/system";
 
-import { ProjectData } from "../../type";
+import { ProjectData } from "../../type/type";
 
 // Enhanced styled card with better spacing and responsive design
 const StyledCard = styled(Card)(({ theme }) => ({
