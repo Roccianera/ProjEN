@@ -4,6 +4,7 @@ import { useTheme } from "@mui/material/styles";
 import { styled } from "@mui/system";
 
 import { ProjectData } from "../../type/type";
+import { useNavigate } from "react-router-dom";
 
 // Enhanced styled card with better spacing and responsive design
 const StyledCard = styled(Card)(({ theme }) => ({
@@ -30,47 +31,34 @@ const StyledProgress = styled(LinearProgress)(({ theme }) => ({
 }));
 
 interface ProjectCardProps extends ProjectData {
+  id: number;
   totalTasks?: number;
   dueDate?: string;
-  priority?: "low" | "medium" | "high";
 }
 
 function ProjectCard({ 
+  id,
   name, 
   taskLeft, 
   totalTasks = 10, 
   dueDate,
-  priority = "medium" 
 }: ProjectCardProps) {
   const theme = useTheme();
+  const navigate= useNavigate();
   
 
   // Calculate completion percentage
   const completedTasks = totalTasks - taskLeft;
   const progressPercentage = (completedTasks / totalTasks) * 100;
-  
-  // Determine priority color
-  const priorityColors = {
-    low: theme.palette.success.main,
-    medium: theme.palette.warning.main,
-    high: theme.palette.error.main
-    
-  };
+
 
   return (
-    <StyledCard>
+    <StyledCard onClick={()=> navigate("/projects/"+id)}>
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
         <Typography variant="h5" fontWeight="bold" color={theme.palette.text.primary}>
           {name}
         </Typography>
-        <Chip 
-          label={priority.toUpperCase()} 
-          size="small"
-          sx={{ 
-            backgroundColor: priorityColors[priority],
-            color: theme.palette.common.white
-          }}
-        />
+       
       </Box>
       
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={1}>

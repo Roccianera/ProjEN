@@ -1,12 +1,13 @@
 import axios from "axios";
 import { getToken } from "./AuthService";
+import { ProjectDetails } from "../type/type";
 
 
-const API_URL = "http://localhost:8080/api/v1/projects/"; // TODO: move to env
+const API_URL = "http://localhost:8080/api/projects/"; // TODO: move to env
 
 
 
-export const getProjectById = async (projectId: number) => {
+export const getProjectById = async (projectId: number):Promise<ProjectDetails> => {
     const token = getToken();
     if(!token){
         throw new Error("No token found");

@@ -4,7 +4,7 @@ export interface ProjectData {
   }
 export  interface Task {
     id: number;
-    title: string;
+    name: string;
     description: string;
     isCompleted:boolean;
     endDate: string;
@@ -13,11 +13,11 @@ export  interface Task {
   
 export  interface ProjectDetails {
     id: number;
-    title: string;
+    name: string;
     description: string;
     startDate: Date;
     endDate: Date;
-    categories: Category;
+    taskCategories: Category[];
     tasks: Task[];
     isCompleted: boolean;
   }
