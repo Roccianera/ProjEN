@@ -1,4 +1,4 @@
-import React, {  useState } from "react";
+import React, { useState } from "react";
 import {
   AppBar,
   Toolbar,
@@ -23,6 +23,9 @@ import MenuIcon from "@mui/icons-material/Menu";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import { DarkMode } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
+import useIsAuthenticated from "react-auth-kit/hooks/useIsAuthenticated";
+import { logout } from "../service/AuthService";
+import useSignOut from "react-auth-kit/hooks/useSignOut";
 
 
 const Search = styled("div")(({ theme }) => ({
@@ -56,7 +59,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   "& .MuiInputBase-input": {
     padding: theme.spacing(1, 1, 1, 0),
     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-   // transition: theme.transitions.create("width"),
+    // transition: theme.transitions.create("width"),
     width: "100%",
     [theme.breakpoints.up("md")]: {
       width: "20ch",
@@ -79,21 +82,24 @@ const NavBar = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [darkMode, setDarkMode] = useState(false);
   const navigate = useNavigate();
+  const signOut= useSignOut();
+
+  const isLogged = useIsAuthenticated();
 
   const navItems = [
-    { text: "Dashboard", icon: <DashboardIcon />, onClick: () => navigate("/dashboard") },
-    { text: "DarkMode", icon: <DarkMode />, onClick: () => handleDarkMode()},
+    {
+      text: "Dashboard",
+      icon: <DashboardIcon />,
+      onClick: () => navigate("/dashboard"),
+    },
+    { text: "DarkMode", icon: <DarkMode />, onClick: () => handleDarkMode() },
   ];
 
-
-  const handleDarkMode =()=>{
+  const handleDarkMode = () => {
     setDarkMode(!darkMode);
     console.log(theme.palette.mode);
     theme.palette.mode = darkMode ? "light" : "dark";
-  }
-
-
-
+  };
 
   const handleDrawerToggle = () => {
     setDrawerOpen(!drawerOpen);
@@ -115,8 +121,8 @@ const NavBar = () => {
       <Divider />
       <List>
         {navItems.map((item) => (
-          <ListItem  component="button" key={item.text} onClick={item.onClick} >
-            <Box     sx={{ mr: 2 }}>{item.icon}</Box>
+          <ListItem component="button" key={item.text} onClick={item.onClick}>
+            <Box sx={{ mr: 2 }}>{item.icon}</Box>
             <ListItemText primary={item.text} />
           </ListItem>
         ))}
@@ -124,13 +130,18 @@ const NavBar = () => {
     </Box>
   );
 
+
+  const handleLogout = () => {
+    
+    signOut();
+    handleProfileMenuClose();
+    navigate("/login");
+
+  };
   return (
     <>
-      <AppBar position="static"  >
-        <Toolbar  >
-
-  
-          
+      <AppBar position="static">
+        <Toolbar>
           {isMobile && (
             <IconButton
               color="inherit"
@@ -151,14 +162,17 @@ const NavBar = () => {
           >
             TaskMaster
           </Typography>
-          
-          
+
           <Box sx={{ flexGrow: 1 }} />
 
           {!isMobile && (
             <Box sx={{ display: "flex" }}>
               {navItems.map((item) => (
-                <NavItem key={item.text} startIcon={item.icon} onClick={item.onClick}>
+                <NavItem
+                  key={item.text}
+                  startIcon={item.icon}
+                  onClick={item.onClick}
+                >
                   {item.text}
                 </NavItem>
               ))}
@@ -166,8 +180,6 @@ const NavBar = () => {
           )}
 
           <Box sx={{ display: "flex", alignItems: "center" }}>
-     
-
             <IconButton
               size="large"
               edge="end"
@@ -194,13 +206,29 @@ const NavBar = () => {
               open={Boolean(anchorEl)}
               onClose={handleProfileMenuClose}
             >
-              <MenuItem onClick={handleProfileMenuClose}>Profile</MenuItem>
-              <MenuItem onClick={handleProfileMenuClose}>My account</MenuItem>
-              <MenuItem onClick={handleProfileMenuClose}>Logout</MenuItem>
+              {isLogged && (
+                <Box>
+                  <MenuItem onClick={handleProfileMenuClose}>Profile</MenuItem>
+
+                  <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                  <MenuItem onClick={handleProfileMenuClose}>
+                    My account
+                  </MenuItem>
+                </Box>
+              )}
+
+              {!isLogged && (
+                <Box>
+                  <MenuItem onClick={() => navigate("/login")}>Login</MenuItem>
+                  <MenuItem onClick={() => navigate("/register")}>
+                    Register
+                  </MenuItem>
+                </Box>
+              )}
             </Menu>
           </Box>
         </Toolbar>
-      </AppBar >
+      </AppBar>
 
       <Drawer
         variant="temporary"
@@ -221,4 +249,3 @@ const NavBar = () => {
 };
 
 export default NavBar;
-

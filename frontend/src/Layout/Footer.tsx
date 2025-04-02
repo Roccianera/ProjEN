@@ -2,18 +2,21 @@ import React from "react";
 import { 
   Box, 
   Container, 
-  Grid, 
   Typography, 
   Link, 
   Divider,
   IconButton
 } from "@mui/material";
+import Grid from "@mui/material/GridLegacy"
 import { 
   Facebook, 
   Twitter, 
   Instagram, 
   LinkedIn 
 } from "@mui/icons-material";
+
+//Change GridLegacy
+
 
 const Footer = () => {
   return (

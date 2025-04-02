@@ -5,10 +5,10 @@ import Cookies from "js-cookie";
 //TODO spostare in env
 const API_URL = "http://localhost:8080/api/auth/"; // TODO: move to env
 
-export const login = async (email: string, password: string) => {
+export const login = async (username: string, password: string) => {
   try {
     const response = await axios.post(API_URL + "login", {
-      email,
+      username,
       password,
     });
 
@@ -57,6 +57,7 @@ export const getUser = async () => {
 
 export const logout = () => {
   Cookies.remove("_auth");
+  
   console.log("Logout successful");
 };
 

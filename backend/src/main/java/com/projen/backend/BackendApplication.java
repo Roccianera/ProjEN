@@ -15,24 +15,6 @@ public class BackendApplication {
 
 	public static void main(String[] args)  {
 
-		
-		/*
-		 * 
-		 ObjectMapper objectMapper = new ObjectMapper();
-		 
-		 JsonSchemaGenerator schemaGenerator= new JsonSchemaGenerator(objectMapper);
-		 
-		 JsonSchema schema = schemaGenerator.generateSchema(ProjectRequestDto.class);
-		 
-		 String jsonSchema = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(schema);
-		 
-		 // Stampare lo schema JSON
-		 System.out.println(jsonSchema);
-		 */
-
-
-
-
 
 
 
