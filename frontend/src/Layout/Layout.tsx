@@ -16,7 +16,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       }}
     >
       <NavBar />
-      <Box component="main" sx={{ flexGrow: 1 }} borderColor={theme.palette.background.paper} borderBottom={1} borderTop={1}>
+      <Box component="main" sx={{ flexGrow: 1  }} minHeight={"70vh"} borderColor={theme.palette.background.paper} borderBottom={1} borderTop={1}>
         {children}
       </Box>
       <Footer />

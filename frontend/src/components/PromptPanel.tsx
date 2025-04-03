@@ -13,11 +13,13 @@ import CloseIcon from "@mui/icons-material/Close";
 import { AddCircle } from "@mui/icons-material";
 import { generateProject } from "../service/aiService";
 import { createProject } from "../service/projectService";
+import { useTheme } from "@mui/material/styles";
 
 // Definisci l'interfaccia delle props
 interface PromptPanelProps {
   shouldFetch: boolean;
   setShouldFetch: React.Dispatch<React.SetStateAction<boolean>>;
+  
 }
 
 const PromptPanel: React.FC<PromptPanelProps> = ({
@@ -28,6 +30,7 @@ const PromptPanel: React.FC<PromptPanelProps> = ({
   const [prompt, setPrompt] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const theme =useTheme()
 
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpen(newOpen);
@@ -75,7 +78,7 @@ const PromptPanel: React.FC<PromptPanelProps> = ({
         open={open}
         onClose={toggleDrawer(false)}
         PaperProps={{
-          sx: { width: "400px", maxWidth: "90vw", p: 2 },
+          sx: { width: "400px", maxWidth: "90vw", p: 2, height: "80vh", borderRadius: 2,  boxShadow: theme.shadows[3] },
         }}
       >
         <Box

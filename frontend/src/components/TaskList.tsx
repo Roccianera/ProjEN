@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import TaskComponent from "./Task";
 import { Task } from "../type/type";
 import {
@@ -16,6 +16,7 @@ import AddIcon from "@mui/icons-material/Add";
 
 interface TaskListProps {
   initialTasks?: Task[];
+  
 }
 
 const TaskList: React.FC<TaskListProps> = ({ initialTasks = [] }) => {
@@ -28,6 +29,10 @@ const TaskList: React.FC<TaskListProps> = ({ initialTasks = [] }) => {
     startDate: new Date().toISOString().split("T")[0],
     endDate: new Date().toISOString().split("T")[0],
   });
+
+  useEffect(() => {
+    setTasks(initialTasks);
+  }, [initialTasks]);
 
   const handleOpenDialog = () => {
     setNewTask({

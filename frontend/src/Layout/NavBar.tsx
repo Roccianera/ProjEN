@@ -98,8 +98,7 @@ const NavBar = () => {
 
   const handleDarkMode = () => {
     setDarkMode(!darkMode);
-    console.log("look"+ darkMode)
-    console.log(theme.palette.mode);
+
     if (theme.palette.mode === "light") {
       theme.palette.mode = "dark";
     } else {

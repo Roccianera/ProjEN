@@ -1,10 +1,11 @@
-import { Stack } from "@mui/material";
+import { Paper, Stack } from "@mui/material";
 import ProjectCard from "../components/ProjectDashboard/ProjectCard";
 import { useEffect, useState } from "react";
 import { ProjectData, ProjectDetails } from "../type/type";
 import { getProjectList } from "../service/projectService";
 import { Alert, Box, CircularProgress, Container } from "@mui/material";
 import { useTheme } from "@emotion/react";
+import AssignmentIcon from "@mui/icons-material/Assignment";
 
 import PromptPanel from "../components/PromptPanel";
 
@@ -88,6 +89,28 @@ function DashboardPage() {
         alignItems={"center"}
         borderColor={"black"}
       >
+
+
+        {projects.length === 0 && (
+          <Paper
+            sx={{
+              padding: 2,
+              borderRadius: 2,
+              backgroundColor: theme.palette.background.paper,
+              boxShadow: 3,
+            }}
+          >
+            <Stack spacing={2} alignItems="center">
+              <AssignmentIcon fontSize="large" color="action" />
+              <h2>No Projects Available</h2>
+              <p>Please create a new project to get started.</p>
+            </Stack>
+          </Paper>
+        )}
+
+
+
+
         {projects.map((project, ind) => {
           return (
             <ProjectCard
