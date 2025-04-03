@@ -2,8 +2,11 @@ import React from "react";
 import { Box } from "@mui/material";
 import NavBar from "./NavBar";
 import Footer from "./Footer";
+import { useTheme } from "@mui/material/styles";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
+
+  const theme = useTheme();
   return (
     <Box
       sx={{
@@ -13,7 +16,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       }}
     >
       <NavBar />
-      <Box component="main" sx={{ flexGrow: 1 }}>
+      <Box component="main" sx={{ flexGrow: 1 }} borderColor={theme.palette.background.paper} borderBottom={1} borderTop={1}>
         {children}
       </Box>
       <Footer />

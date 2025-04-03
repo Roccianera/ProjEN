@@ -11,10 +11,23 @@ import {
 import SendIcon from "@mui/icons-material/Send";
 import CloseIcon from "@mui/icons-material/Close";
 import { AddCircle } from "@mui/icons-material";
+import { generateProject } from "../service/aiService";
+import { createProject } from "../service/projectService";
 
-const PromptPanel = () => {
+// Definisci l'interfaccia delle props
+interface PromptPanelProps {
+  shouldFetch: boolean;
+  setShouldFetch: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const PromptPanel: React.FC<PromptPanelProps> = ({
+  shouldFetch,
+  setShouldFetch,
+}) => {
   const [open, setOpen] = useState(false);
   const [prompt, setPrompt] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpen(newOpen);
@@ -23,23 +36,37 @@ const PromptPanel = () => {
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     console.log("Prompt inviato:", prompt);
-    // Qui puoi aggiungere la logica per gestire il prompt
+    setLoading(true);
+
+    try {
+      const projectResponse = await generateProject(prompt);
+      console.log("Risposta ricevuta:", projectResponse);
+
+      const response = await createProject(projectResponse);
+      console.log("Progetto creato:", response);
+
+      setShouldFetch(!shouldFetch);
+    } catch (error) {
+      console.error("Errore durante la generazione del progetto:", error);
+      setError("Errore durante la generazione del progetto. Riprova.");
+    } finally {
+      setLoading(false);
+    }
     setOpen(false);
     setPrompt("");
   };
 
   return (
     <Box>
-      {/* Pulsante per aprire il pannello */}
       <Button
         variant="contained"
         color="primary"
         onClick={toggleDrawer(true)}
         sx={{ position: "fixed", right: 16, bottom: 16 }}
       >
-        <AddCircle></AddCircle>
+        <AddCircle />
       </Button>
 
       {/* Pannello laterale */}
@@ -84,7 +111,6 @@ const PromptPanel = () => {
             sx={{ flexGrow: 1, mb: 2 }}
           />
 
-          {/* Pulsante di invio */}
           <Button
             variant="contained"
             endIcon={<SendIcon />}
@@ -94,6 +120,22 @@ const PromptPanel = () => {
           >
             Invia
           </Button>
+
+          {loading && (
+            <Typography variant="body2" color="textSecondary" mt={2}>
+              Generating project, please wait...
+            </Typography>
+          )}
+
+          {error && (
+            <Typography variant="body2" color="error" mt={2}>
+              {error}
+            </Typography>
+          )}
+
+
+
+
         </Box>
       </Drawer>
     </Box>

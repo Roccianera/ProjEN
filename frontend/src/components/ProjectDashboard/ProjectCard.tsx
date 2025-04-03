@@ -20,6 +20,8 @@ const StyledCard = styled(Card)(({ theme }) => ({
     transform: "translateY(-4px)",
     boxShadow: theme.shadows[6],
   },
+
+
 }));
 
 // Styled progress component
@@ -53,7 +55,7 @@ function ProjectCard({
 
 
   return (
-    <StyledCard onClick={()=> navigate("/projects/"+id)}>
+    <StyledCard onClick={()=> navigate("/projects/"+id)  }>
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
         <Typography variant="h5" fontWeight="bold" color={theme.palette.text.primary}>
           {name}

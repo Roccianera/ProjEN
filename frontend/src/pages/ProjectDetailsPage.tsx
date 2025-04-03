@@ -10,6 +10,11 @@ import {
   Container,
 } from "@mui/material";
 import { getProjectById } from "../service/projectService";
+import { styled } from "@mui/system";
+import Card from "@mui/material/Card";
+import { useTheme } from "@mui/material/styles";
+import TaskComponent from "../components/Task";
+import TaskList from "../components/TaskList";
 
 function ProjectDetailsPage() {
   const { id } = useParams<{ id: string }>();
@@ -76,46 +81,40 @@ function ProjectDetailsPage() {
 
       
       <Box sx={{ mt: 4 }}>
-        <Typography variant="h4" gutterBottom>
-          {project.name}
-        </Typography>
-        
-        <Box sx={{ mb: 3 }}>
-          <Typography variant="subtitle1" color="text.secondary">
-            {new Date(project.startDate).toLocaleDateString()}
+     
+        <StyledCard>
+
+          <Typography variant="h4" gutterBottom>
+            {project.name}
           </Typography>
-          <Typography variant="body1" sx={{ mt: 2 }}>
+          <Typography variant="body1" color="text.secondary">
             {project.description}
           </Typography>
-        </Box>
-        
+
+          <Typography variant="subtitle1" color="text.secondary">
+            Due Date    {new Date(project.startDate).toLocaleDateString()}
+          </Typography>
+
+          </StyledCard>
+
+     
+
         <Box sx={{ mt: 4 }}>
           <Typography variant="h5" gutterBottom>
             Details
           </Typography>
-          <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: 2 }}>
-            <Typography variant="body1" fontWeight="bold">Status:</Typography>
-            <Typography variant="body1">{project.description}</Typography>
-            
-            <Typography variant="body1" fontWeight="bold">Client:</Typography>
-            
-            <Typography variant="body1" fontWeight="bold">Budget:</Typography>
-            
-            <Typography variant="body1" fontWeight="bold">Deadline:</Typography>
+          
             <Typography variant="body1">
-              {project.endDate ? new Date(project.endDate).toLocaleDateString() : 'Not specified'}
+              {project.taskCategories.map((category) => 
+                <TaskList key={category.id} initialTasks={category.tasks} />
+              )}
             </Typography>
-
-            <Typography variant="body1" fontWeight="bold">Tasks:</Typography>
-            <Typography variant="body1">{project.taskCategories.map((category) => category.tasks.map(
-              (task) => task.name).join(", ") )}</Typography>
             
            
             
 
           </Box>
         </Box>
-      </Box>
 
 
     </Container>
@@ -126,4 +125,19 @@ function ProjectDetailsPage() {
 
 }
 
+
+const StyledCard = styled(Card)(({ theme }) => ({
+  display: "flex",
+  flexDirection: "column",
+  padding: theme.spacing(3),
+  backgroundColor: theme.palette.background.paper,
+  borderRadius: theme.shape.borderRadius,
+  boxShadow: (theme.shadows as string[] )[3],
+  width: "100%",
+  transition: "transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out",
+  "&:hover": {
+    transform: "translateY(-4px)",
+    boxShadow: (theme.shadows as string[])[6],
+  },
+}));
 export default ProjectDetailsPage;

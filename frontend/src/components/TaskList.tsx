@@ -1,68 +1,193 @@
-import {
-  Typography,
-  CircularProgress,
-  Alert,
-  Box,
-  Container,
-  Paper,
-  Chip,
-  Button,
-  Tabs,
-  Tab,
-} from "@mui/material";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import TaskComponent from "./Task";
 import { Task } from "../type/type";
-// Aggiungi questo stato all'inizio del componente
+import {
+  Box,
+  Typography,
+  Button,
+  Container,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+} from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
 
-// Aggiungi questo componente per la lista dei task
-const TaskList = ({ tasks }: { tasks: Task[] }) => {
-  const [activeTab, setActiveTab] = useState(0);
-  
-  const navigate = useNavigate();
-  if (!tasks || tasks.length === 0) {
-    return <Alert severity="info">No tasks available.</Alert>;
-  }
+interface TaskListProps {
+  initialTasks?: Task[];
+}
+
+const TaskList: React.FC<TaskListProps> = ({ initialTasks = [] }) => {
+  const [tasks, setTasks] = useState<Task[]>(initialTasks);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [newTask, setNewTask] = useState<Omit<Task, "id">>({
+    name: "",
+    description: "",
+    isCompleted: false,
+    startDate: new Date().toISOString().split("T")[0],
+    endDate: new Date().toISOString().split("T")[0],
+  });
+
+  const handleOpenDialog = () => {
+    setNewTask({
+      name: "",
+      description: "",
+      isCompleted: false,
+      startDate: new Date().toISOString().split("T")[0],
+      endDate: new Date().toISOString().split("T")[0],
+    });
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setNewTask((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleAddTask = () => {
+    const newId =
+      tasks.length > 0 ? Math.max(...tasks.map((t) => t.id)) + 1 : 1;
+    setTasks([...tasks, { id: newId, ...newTask }]);
+    setOpenDialog(false);
+  };
+
+  const handleDeleteTask = (id: number) => {
+    setTasks(tasks.filter((task) => task.id !== id));
+  };
+
+  const handleUpdateTask = (updatedTask: Task) => {
+    setTasks(
+      tasks.map((task) => (task.id === updatedTask.id ? updatedTask : task))
+    );
+  };
+
+  const handleStatusChange = (id: number, status: boolean) => {
+    setTasks(
+      tasks.map((task) =>
+        task.id === id ? { ...task, isCompleted: status } : task
+      )
+    );
+  };
 
   return (
-    <Box sx={{ mt: 2 }}>
-      {tasks.map((task) => (
-        <Paper
-          key={task.id}
-          sx={{
-            p: 2,
-            mb: 2,
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
+    <Container maxWidth="md">
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          mb: 3,
+        }}
+      >
+        <Typography variant="h4">Task List</Typography>
+        <Button
+          variant="contained"
+          startIcon={<AddIcon />}
+          onClick={handleOpenDialog}
         >
-          <Box>
-            <Typography variant="h6">{task.name}</Typography>
-            <Typography variant="body2" color="text.secondary">
-              {task.description}
-            </Typography>
-            <Box sx={{ display: "flex", gap: 2, mt: 1 }}>
-              <Typography variant="caption">
-                <strong>Start:</strong>{" "}
-                {new Date(task.startDate).toLocaleDateString()}
-              </Typography>
-              <Typography variant="caption">
-                <strong>Due:</strong>{" "}
-                {new Date(task.endDate).toLocaleDateString()}
-              </Typography>
-            </Box>
-          </Box>
-          <Box>
-            <Chip
-              label={task.isCompleted ? "Completed" : "In Progress"}
-              color={task.isCompleted ? "success" : "primary"}
-              size="small"
-            />
-          </Box>
-        </Paper>
-      ))}
-    </Box>
+          Add Task
+        </Button>
+      </Box>
+
+      {tasks.length === 0 ? (
+        <Typography
+          variant="subtitle1"
+          color="text.secondary"
+          align="center"
+          sx={{ mt: 4 }}
+        >
+          No tasks available. Add a new task to get started.
+        </Typography>
+      ) : (
+        tasks.map((task) => (
+          <TaskComponent
+            key={task.id}
+            task={task}
+            onDelete={handleDeleteTask}
+            onUpdate={handleUpdateTask}
+            onStatusChange={handleStatusChange}
+          />
+        ))
+      )}
+
+      {/* Add Task Dialog */}
+      <Dialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>Add New Task</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            name="name"
+            label="Task Name"
+            type="text"
+            fullWidth
+            value={newTask.name}
+            onChange={handleChange}
+            variant="outlined"
+            sx={{ mb: 2 }}
+          />
+          <TextField
+            margin="dense"
+            name="description"
+            label="Description"
+            type="text"
+            fullWidth
+            multiline
+            rows={4}
+            value={newTask.description}
+            onChange={handleChange}
+            variant="outlined"
+            sx={{ mb: 2 }}
+          />
+          <TextField
+            margin="dense"
+            name="startDate"
+            label="Start Date"
+            type="date"
+            fullWidth
+            value={newTask.startDate}
+            onChange={handleChange}
+            InputLabelProps={{ shrink: true }}
+            variant="outlined"
+            sx={{ mb: 2 }}
+          />
+          <TextField
+            margin="dense"
+            name="endDate"
+            label="End Date"
+            type="date"
+            fullWidth
+            value={newTask.endDate}
+            onChange={handleChange}
+            InputLabelProps={{ shrink: true }}
+            variant="outlined"
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog} color="primary">
+            Cancel
+          </Button>
+          <Button
+            onClick={handleAddTask}
+            color="primary"
+            variant="contained"
+            disabled={!newTask.name.trim()}
+          >
+            Add Task
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </Container>
   );
 };
 

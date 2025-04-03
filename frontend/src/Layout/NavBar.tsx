@@ -86,6 +86,7 @@ const NavBar = () => {
 
   const isLogged = useIsAuthenticated();
 
+
   const navItems = [
     {
       text: "Dashboard",
@@ -97,8 +98,14 @@ const NavBar = () => {
 
   const handleDarkMode = () => {
     setDarkMode(!darkMode);
+    console.log("look"+ darkMode)
     console.log(theme.palette.mode);
-    theme.palette.mode = darkMode ? "light" : "dark";
+    if (theme.palette.mode === "light") {
+      theme.palette.mode = "dark";
+    } else {
+      theme.palette.mode = "light";
+    }
+   
   };
 
   const handleDrawerToggle = () => {
@@ -140,7 +147,7 @@ const NavBar = () => {
   };
   return (
     <>
-      <AppBar position="static">
+      <AppBar position="static" >
         <Toolbar>
           {isMobile && (
             <IconButton
