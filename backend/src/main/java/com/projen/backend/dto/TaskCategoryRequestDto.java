@@ -6,6 +6,7 @@ import java.util.List;
 
 public record TaskCategoryRequestDto(
         String name,
-        List<TaskRequestDto> tasks
+        List<TaskRequestDto> tasks,
+        Long projectId
 ) {
 }

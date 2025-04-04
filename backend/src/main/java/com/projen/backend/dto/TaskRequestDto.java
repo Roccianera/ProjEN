@@ -17,7 +17,9 @@ public record TaskRequestDto(
         @NotBlank(message = "Task description is required")
         String description,
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-        LocalDate endDate
+        LocalDate endDate,
+        Boolean  isCompleted,
+        Long taskCategoryId
         
 ) {
 }

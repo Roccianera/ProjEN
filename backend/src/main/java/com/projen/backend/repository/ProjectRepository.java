@@ -9,4 +9,6 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
 
     List<Project> findAllByUser_Username(String name);
 
+    Boolean existsByIdAndUser_Username(Long projectId, String username);
+
 }

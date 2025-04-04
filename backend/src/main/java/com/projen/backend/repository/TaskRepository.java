@@ -9,4 +9,6 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
 
 
     
+    Boolean  existsByIdAndTaskCategory_Project_User_Username(Long id, String username);
+
 }
