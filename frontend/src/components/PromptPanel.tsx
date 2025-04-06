@@ -15,22 +15,17 @@ import { generateProject } from "../service/aiService";
 import { createProject } from "../service/projectService";
 import { useTheme } from "@mui/material/styles";
 
-// Definisci l'interfaccia delle props
+// Aggiornamento dell'interfaccia delle props
 interface PromptPanelProps {
-  shouldFetch: boolean;
-  setShouldFetch: React.Dispatch<React.SetStateAction<boolean>>;
-  
+  refreshProjects: () => void;
 }
 
-const PromptPanel: React.FC<PromptPanelProps> = ({
-  shouldFetch,
-  setShouldFetch,
-}) => {
+const PromptPanel: React.FC<PromptPanelProps> = ({ refreshProjects }) => {
   const [open, setOpen] = useState(false);
   const [prompt, setPrompt] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
-  const theme =useTheme()
+  const theme = useTheme();
 
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpen(newOpen);
@@ -50,7 +45,7 @@ const PromptPanel: React.FC<PromptPanelProps> = ({
       const response = await createProject(projectResponse);
       console.log("Progetto creato:", response);
 
-      setShouldFetch(!shouldFetch);
+      refreshProjects(); // Use the new function instead of toggling shouldFetch
     } catch (error) {
       console.error("Errore durante la generazione del progetto:", error);
       setError("Errore durante la generazione del progetto. Riprova.");
@@ -78,7 +73,14 @@ const PromptPanel: React.FC<PromptPanelProps> = ({
         open={open}
         onClose={toggleDrawer(false)}
         PaperProps={{
-          sx: { width: "400px", maxWidth: "90vw", p: 2, height: "80vh", borderRadius: 2,  boxShadow: theme.shadows[3] },
+          sx: {
+            width: "400px",
+            maxWidth: "90vw",
+            p: 2,
+            height: "80vh",
+            borderRadius: 2,
+            boxShadow: theme.shadows[3],
+          },
         }}
       >
         <Box
@@ -135,10 +137,6 @@ const PromptPanel: React.FC<PromptPanelProps> = ({
               {error}
             </Typography>
           )}
-
-
-
-
         </Box>
       </Drawer>
     </Box>

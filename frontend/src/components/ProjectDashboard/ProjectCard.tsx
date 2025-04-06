@@ -14,14 +14,13 @@ const StyledCard = styled(Card)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
   borderRadius: theme.shape.borderRadius,
   boxShadow: theme.shadows[3],
-  width: "80%",
+  width: "100%",
   transition: "transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out",
+  cursor: "pointer",
   "&:hover": {
     transform: "translateY(-4px)",
     boxShadow: theme.shadows[6],
   },
-
-
 }));
 
 // Styled progress component
@@ -38,32 +37,47 @@ interface ProjectCardProps extends ProjectData {
   dueDate?: string;
 }
 
-function ProjectCard({ 
+function ProjectCard({
   id,
-  name, 
-  taskLeft, 
-  totalTasks = 10, 
+  name,
+  taskLeft,
+  totalTasks = 10,
   dueDate,
 }: ProjectCardProps) {
   const theme = useTheme();
-  const navigate= useNavigate();
-  
+  const navigate = useNavigate();
 
   // Calculate completion percentage
   const completedTasks = totalTasks - taskLeft;
   const progressPercentage = (completedTasks / totalTasks) * 100;
 
+  const handleCardClick = (e: React.MouseEvent) => {
+    navigate(`/projects/${id}`);
+  };
 
   return (
-    <StyledCard onClick={()=> navigate("/projects/"+id)  }>
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-        <Typography variant="h5" fontWeight="bold" color={theme.palette.text.primary}>
+    <StyledCard onClick={handleCardClick}>
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        mb={2}
+      >
+        <Typography
+          variant="h5"
+          fontWeight="bold"
+          color={theme.palette.text.primary}
+        >
           {name}
         </Typography>
-       
       </Box>
-      
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={1}>
+
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        mb={1}
+      >
         <Typography variant="body1" color={theme.palette.text.secondary}>
           {taskLeft} of {totalTasks} tasks remaining
         </Typography>
@@ -73,9 +87,9 @@ function ProjectCard({
           </Typography>
         )}
       </Box>
-      
-      <StyledProgress 
-        variant="determinate" 
+
+      <StyledProgress
+        variant="determinate"
         value={progressPercentage}
         color={taskLeft === 0 ? "success" : "primary"}
       />

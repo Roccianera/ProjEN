@@ -59,9 +59,10 @@ public class MapperDto {
     }
     public TaskCategory mapToTaskCategory(TaskCategoryRequestDto taskCategoryRequestDto) {
         var taskCategory= TaskCategory.builder()
-                .name(taskCategoryRequestDto.name())
-                .tasks(taskCategoryRequestDto.tasks().stream().map(taskRequestDto->mapToTask(taskRequestDto)).collect(Collectors.toList()))
-                .build();
+            .name(taskCategoryRequestDto.name())
+            .tasks(
+            taskCategoryRequestDto.tasks()!= null ? taskCategoryRequestDto.tasks().stream().map(taskRequestDto->mapToTask(taskRequestDto)).collect(Collectors.toList()) : java.util.Collections.emptyList())
+            .build();
                 
 
         for (Task   task : taskCategory.getTasks()) {

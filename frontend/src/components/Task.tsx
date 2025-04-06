@@ -17,7 +17,6 @@ import {
   Tooltip,
 } from "@mui/material";
 import { Delete, Edit, CalendarToday } from "@mui/icons-material";
-import { format } from "date-fns";
 
 interface TaskProps {
   task: Task;
@@ -56,6 +55,16 @@ function TaskComponent({
 
   const handleStatusChange = () => {
     onStatusChange(task.id, !task.isCompleted);
+  };
+
+  // Format the date for display
+  const formatDate = (dateString: string) => {
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleDateString();
+    } catch (error) {
+      return dateString;
+    }
   };
 
   return (
@@ -123,13 +132,15 @@ function TaskComponent({
           <Box sx={{ mt: 2, display: "flex", alignItems: "center", ml: 4 }}>
             <CalendarToday fontSize="small" color="action" />
             <Box sx={{ ml: 1, display: "flex", gap: 1 }}>
+              {task.startDate && (
+                <Chip
+                  label={`Start: ${formatDate(task.startDate)}`}
+                  size="small"
+                  variant="outlined"
+                />
+              )}
               <Chip
-                label={`Start: ${task.startDate}`}
-                size="small"
-                variant="outlined"
-              />
-              <Chip
-                label={`Due: ${task.endDate}`}
+                label={`Due: ${formatDate(task.endDate)}`}
                 size="small"
                 color={
                   new Date(task.endDate) < new Date() && !task.isCompleted
@@ -174,18 +185,6 @@ function TaskComponent({
             rows={4}
             value={editedTask.description}
             onChange={handleChange}
-            variant="outlined"
-            sx={{ mb: 2 }}
-          />
-          <TextField
-            margin="dense"
-            name="startDate"
-            label="Start Date"
-            type="date"
-            fullWidth
-            value={editedTask.startDate}
-            onChange={handleChange}
-            InputLabelProps={{ shrink: true }}
             variant="outlined"
             sx={{ mb: 2 }}
           />

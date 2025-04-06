@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import TaskComponent from "./Task";
-import { Task } from "../type/type";
+import { Task, TaskRequestDto } from "../type/type";
 import {
-  Box,
   Typography,
   Button,
   Container,
@@ -12,21 +11,26 @@ import {
   DialogActions,
   TextField,
 } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
+import { createTask, deleteTask, updateTask } from "../service/taskService";
 
 interface TaskListProps {
   initialTasks?: Task[];
-  
+  categoryId: number;
+  onTaskChange?: () => void;
 }
 
-const TaskList: React.FC<TaskListProps> = ({ initialTasks = [] }) => {
+const TaskList: React.FC<TaskListProps> = ({
+  initialTasks = [],
+  categoryId,
+  onTaskChange,
+}) => {
   const [tasks, setTasks] = useState<Task[]>(initialTasks);
   const [openDialog, setOpenDialog] = useState(false);
-  const [newTask, setNewTask] = useState<Omit<Task, "id">>({
+  const [newTask, setNewTask] = useState<
+    Omit<TaskRequestDto, "taskCategoryId">
+  >({
     name: "",
     description: "",
-    isCompleted: false,
-    startDate: new Date().toISOString().split("T")[0],
     endDate: new Date().toISOString().split("T")[0],
   });
 
@@ -38,8 +42,6 @@ const TaskList: React.FC<TaskListProps> = ({ initialTasks = [] }) => {
     setNewTask({
       name: "",
       description: "",
-      isCompleted: false,
-      startDate: new Date().toISOString().split("T")[0],
       endDate: new Date().toISOString().split("T")[0],
     });
     setOpenDialog(true);
@@ -54,50 +56,94 @@ const TaskList: React.FC<TaskListProps> = ({ initialTasks = [] }) => {
     setNewTask((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleAddTask = () => {
-    const newId =
-      tasks.length > 0 ? Math.max(...tasks.map((t) => t.id)) + 1 : 1;
-    setTasks([...tasks, { id: newId, ...newTask }]);
-    setOpenDialog(false);
+  const handleAddTask = async () => {
+    try {
+      const taskData: TaskRequestDto = {
+        ...newTask,
+        taskCategoryId: categoryId,
+      };
+
+      const createdTask = await createTask(taskData);
+      setTasks([...tasks, createdTask]);
+      setOpenDialog(false);
+
+      if (onTaskChange) {
+        onTaskChange();
+      }
+    } catch (error) {
+      console.error("Failed to create task:", error);
+    }
   };
 
-  const handleDeleteTask = (id: number) => {
-    setTasks(tasks.filter((task) => task.id !== id));
+  const handleDeleteTask = async (id: number) => {
+    try {
+      await deleteTask(id);
+      setTasks(tasks.filter((task) => task.id !== id));
+
+      if (onTaskChange) {
+        onTaskChange();
+      }
+    } catch (error) {
+      console.error("Failed to delete task:", error);
+    }
   };
 
-  const handleUpdateTask = (updatedTask: Task) => {
-    setTasks(
-      tasks.map((task) => (task.id === updatedTask.id ? updatedTask : task))
-    );
+  const handleUpdateTask = async (updatedTask: Task) => {
+    try {
+      const taskData: TaskRequestDto = {
+        name: updatedTask.name,
+        description: updatedTask.description,
+        endDate: updatedTask.endDate,
+        taskCategoryId: categoryId,
+      };
+
+      await updateTask(updatedTask.id, taskData);
+      setTasks(
+        tasks.map((task) => (task.id === updatedTask.id ? updatedTask : task))
+      );
+
+      if (onTaskChange) {
+        onTaskChange();
+      }
+    } catch (error) {
+      console.error("Failed to update task:", error);
+    }
   };
 
-  const handleStatusChange = (id: number, status: boolean) => {
-    setTasks(
-      tasks.map((task) =>
-        task.id === id ? { ...task, isCompleted: status } : task
-      )
-    );
+  const handleStatusChange = async (id: number, status: boolean) => {
+    const taskToUpdate = tasks.find((t) => t.id === id);
+    if (!taskToUpdate) return;
+
+    try {
+      const taskData: TaskRequestDto = {
+        name: taskToUpdate.name,
+        description: taskToUpdate.description,
+        endDate: taskToUpdate.endDate,
+        taskCategoryId: categoryId,
+      };
+
+      const updatedTask = await updateTask(id, {
+        ...taskData,
+        isCompleted: status,
+      });
+
+      setTasks(
+        tasks.map((task) =>
+          task.id === id ? { ...task, isCompleted: status } : task
+        )
+      );
+
+      if (onTaskChange) {
+        onTaskChange();
+      }
+    } catch (error) {
+      console.error("Failed to update task status:", error);
+    }
   };
 
   return (
     <Container maxWidth="md">
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          mb: 3,
-        }}
-      >
-        <Typography variant="h4">Task List</Typography>
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          onClick={handleOpenDialog}
-        >
-          Add Task
-        </Button>
-      </Box>
+     
 
       {tasks.length === 0 ? (
         <Typography
@@ -151,18 +197,6 @@ const TaskList: React.FC<TaskListProps> = ({ initialTasks = [] }) => {
             rows={4}
             value={newTask.description}
             onChange={handleChange}
-            variant="outlined"
-            sx={{ mb: 2 }}
-          />
-          <TextField
-            margin="dense"
-            name="startDate"
-            label="Start Date"
-            type="date"
-            fullWidth
-            value={newTask.startDate}
-            onChange={handleChange}
-            InputLabelProps={{ shrink: true }}
             variant="outlined"
             sx={{ mb: 2 }}
           />

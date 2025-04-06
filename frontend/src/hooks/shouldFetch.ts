@@ -1,8 +1,7 @@
-import {useState } from 'react';
+import { useState } from "react";
 
-export function useShouldFetch() {
-    const [shouldFetch, setShouldFetch] = useState<boolean>(true);
+export const useShouldFetch = () => {
+  const [shouldFetch, setShouldFetch] = useState<boolean>(false);
 
- 
-    return {shouldFetch,setShouldFetch};
-}
+  return { shouldFetch, setShouldFetch };
+};
