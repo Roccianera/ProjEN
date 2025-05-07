@@ -20,7 +20,7 @@ import {
   DialogActions,
 } from "@mui/material";
 
-import Grid from "@mui/material/GridLegacy";
+import Grid from "@mui/material/Grid";
 import { getProjectById } from "../service/projectService";
 import { createCategory } from "../service/categoryService";
 import { createTask } from "../service/taskService";
@@ -54,6 +54,10 @@ function ProjectDetailsPage() {
   const theme = useTheme();
   const [refreshTrigger, setRefreshTrigger] = useState<number>(0);
 
+
+  //TODO: refactor this component
+
+
   useEffect(() => {
     const fetchProjectData = async () => {
       if (!id) {
@@ -77,7 +81,7 @@ function ProjectDetailsPage() {
     };
 
     fetchProjectData();
-  }, [id]);
+  }, [id, refreshTrigger]);
 
   const refreshProjectData = () => {
     setRefreshTrigger((prev) => prev + 1);
@@ -251,7 +255,6 @@ function ProjectDetailsPage() {
                   </Typography>
                 </Box>
               </Box>
-
             </StyledStatsCard>
           </Grid>
         </Grid>
@@ -392,7 +395,6 @@ function ProjectDetailsPage() {
               key={activeCategory}
               initialTasks={project.taskCategories[activeCategory].tasks}
               categoryId={project.taskCategories[activeCategory].id}
-              onTaskChange={refreshProjectData}
             />
 
             {project.taskCategories[activeCategory].tasks.length === 0 && (
