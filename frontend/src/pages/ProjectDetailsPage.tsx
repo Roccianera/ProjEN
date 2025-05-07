@@ -77,7 +77,7 @@ function ProjectDetailsPage() {
     };
 
     fetchProjectData();
-  }, [id, refreshTrigger]);
+  }, [id]);
 
   const refreshProjectData = () => {
     setRefreshTrigger((prev) => prev + 1);
@@ -252,26 +252,6 @@ function ProjectDetailsPage() {
                 </Box>
               </Box>
 
-              <Box
-                sx={{ mt: 2, display: "flex", justifyContent: "space-between" }}
-              >
-                <Typography variant="body2">
-                  <Box component="span" fontWeight="bold">
-                    {completedTasks}
-                  </Box>{" "}
-                  of {totalTasks} tasks completed
-                </Typography>
-                <Typography
-                  variant="body2"
-                  color={daysUntilDue < 0 ? "error.main" : "text.secondary"}
-                >
-                  {daysUntilDue < 0
-                    ? `Overdue by ${Math.abs(daysUntilDue)} days`
-                    : daysUntilDue === 0
-                    ? "Due today"
-                    : `${daysUntilDue} days left`}
-                </Typography>
-              </Box>
             </StyledStatsCard>
           </Grid>
         </Grid>

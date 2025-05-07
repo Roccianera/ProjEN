@@ -10,17 +10,22 @@ import {
 } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import CloseIcon from "@mui/icons-material/Close";
-import { AddCircle } from "@mui/icons-material";
-import { generateProject } from "../service/aiService";
-import { createProject } from "../service/projectService";
+import AssistentICon from "@mui/icons-material/Assistant";
+
 import { useTheme } from "@mui/material/styles";
 
 // Aggiornamento dell'interfaccia delle props
 interface PromptPanelProps {
-  refreshProjects: () => void;
+  promptFunction: (prompt: string) => Promise<any>;
+  promptTitle?: string;
+  promptDescription?: string;
 }
 
-const PromptPanel: React.FC<PromptPanelProps> = ({ refreshProjects }) => {
+const PromptPanel: React.FC<PromptPanelProps> = ({
+  promptFunction,
+  promptTitle,
+  promptDescription,
+}) => {
   const [open, setOpen] = useState(false);
   const [prompt, setPrompt] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -35,17 +40,10 @@ const PromptPanel: React.FC<PromptPanelProps> = ({ refreshProjects }) => {
   };
 
   const handleSubmit = async () => {
-    console.log("Prompt inviato:", prompt);
     setLoading(true);
 
     try {
-      const projectResponse = await generateProject(prompt);
-      console.log("Risposta ricevuta:", projectResponse);
-
-      const response = await createProject(projectResponse);
-      console.log("Progetto creato:", response);
-
-      refreshProjects(); // Use the new function instead of toggling shouldFetch
+      const response = await promptFunction(prompt); // Passa il prompt alla funzione di generazione del progetto
     } catch (error) {
       console.error("Errore durante la generazione del progetto:", error);
       setError("Errore durante la generazione del progetto. Riprova.");
@@ -64,10 +62,9 @@ const PromptPanel: React.FC<PromptPanelProps> = ({ refreshProjects }) => {
         onClick={toggleDrawer(true)}
         sx={{ position: "fixed", right: 16, bottom: 16 }}
       >
-        <AddCircle />
+        <AssistentICon />
       </Button>
 
-      {/* Pannello laterale */}
       <Drawer
         anchor="right"
         open={open}
@@ -77,7 +74,7 @@ const PromptPanel: React.FC<PromptPanelProps> = ({ refreshProjects }) => {
             width: "400px",
             maxWidth: "90vw",
             p: 2,
-            height: "80vh",
+            height: "100vh",
             borderRadius: 2,
             boxShadow: theme.shadows[3],
           },
@@ -90,20 +87,18 @@ const PromptPanel: React.FC<PromptPanelProps> = ({ refreshProjects }) => {
             height: "100%",
           }}
         >
-          {/* Intestazione */}
           <Stack
             direction="row"
             justifyContent="space-between"
             alignItems="center"
             mb={2}
           >
-            <Typography variant="h6">Inserisci il tuo prompt</Typography>
+            <Typography variant="h6">{promptTitle}</Typography>
             <IconButton onClick={toggleDrawer(false)}>
               <CloseIcon />
             </IconButton>
           </Stack>
 
-          {/* Area di testo */}
           <TextField
             multiline
             minRows={6}
@@ -111,7 +106,7 @@ const PromptPanel: React.FC<PromptPanelProps> = ({ refreshProjects }) => {
             fullWidth
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
-            placeholder="Scrivi qui il tuo prompt..."
+            placeholder="Write your prompt here..."
             variant="outlined"
             sx={{ flexGrow: 1, mb: 2 }}
           />
@@ -128,7 +123,7 @@ const PromptPanel: React.FC<PromptPanelProps> = ({ refreshProjects }) => {
 
           {loading && (
             <Typography variant="body2" color="textSecondary" mt={2}>
-              Generating project, please wait...
+              Processing, please wait...
             </Typography>
           )}
 

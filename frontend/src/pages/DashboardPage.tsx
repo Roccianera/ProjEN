@@ -7,6 +7,7 @@ import {
   deleteProject,
   getProjectList,
 } from "../service/projectService";
+import { generateProject } from "../service/aiService";
 import {
   Alert,
   Box,
@@ -94,6 +95,14 @@ function DashboardPage() {
 
   const refreshProjects = () => {
     setRefreshTrigger((prev) => prev + 1);
+  };
+
+  const generateProjectFromAi = async (prompt: string) => {
+    const projectResponse = await generateProject(prompt);
+    console.log("Risposta ricevuta:", projectResponse);
+
+    const response = await createProject(projectResponse);
+    console.log("Progetto creato:", response);
   };
 
   const handleOpenCreateDialog = () => {
@@ -253,17 +262,16 @@ function DashboardPage() {
             })}
         </Stack>
 
-        {/* Floating Action Button for adding new projects */}
+       
         <Fab
           color="primary"
           aria-label="add project"
-          sx={{ position: "fixed", bottom: 20, right: 20 }}
+          sx={{ position: "fixed", bottom: 72, right: 20 }} 
           onClick={handleOpenCreateDialog}
         >
           <AddIcon />
         </Fab>
 
-        {/* Create Project Dialog */}
         <Dialog open={openCreateDialog} onClose={handleCloseCreateDialog}>
           <DialogTitle>Create New Project</DialogTitle>
           <DialogContent>
@@ -313,7 +321,6 @@ function DashboardPage() {
           </DialogActions>
         </Dialog>
 
-        {/* Delete Confirmation Dialog */}
         <Dialog
           open={openDeleteDialog}
           onClose={() => setOpenDeleteDialog(false)}
@@ -336,8 +343,13 @@ function DashboardPage() {
             </Button>
           </DialogActions>
         </Dialog>
+
+        <PromptPanel
+          promptFunction={generateProjectFromAi}
+          promptTitle="Create your project with ai from a prompt "
+          promptDescription="N"
+        />
       </Box>
-      <PromptPanel refreshProjects={refreshProjects} />
     </>
   );
 }
