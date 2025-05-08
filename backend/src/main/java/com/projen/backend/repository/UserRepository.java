@@ -9,7 +9,6 @@ import com.projen.backend.model.User;
 public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByUsername(String username);
-    // Add custom queries if needed
 
     Boolean existsByEmail(String email);
 

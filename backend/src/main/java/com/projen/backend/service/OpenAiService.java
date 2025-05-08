@@ -6,6 +6,7 @@ import org.springframework.ai.openai.OpenAiChatModel;
 import org.springframework.ai.openai.OpenAiChatOptions;
 import org.springframework.ai.openai.api.OpenAiApi.ChatModel;
 import org.springframework.ai.openai.api.ResponseFormat;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -16,11 +17,14 @@ public class OpenAiService {
 
     private final OpenAiChatModel chatModel;
 
+    @Value("${spring.ai.openai.api-key:}")
+    private String apiKey;
 
-
-
-    public String  generateObjectFromPromptandSchema(String requesProject ,String schema){
-
+    public String generateObjectFromPromptandSchema(String requesProject, String schema) {
+        // Check if API key is available
+        if (apiKey == null || apiKey.isEmpty()) {
+            return "Error: OpenAI API key is not configured. Please set spring.ai.openai.api-key.";
+        }
 
         //TODO refactor
         String jsonSchema2 = """
@@ -72,6 +76,7 @@ public class OpenAiService {
         Prompt prompt = new Prompt(requesProject,
         OpenAiChatOptions.builder()
             .model(ChatModel.GPT_4_O_MINI)
+            
             .responseFormat(new ResponseFormat(ResponseFormat.Type.JSON_SCHEMA,jsonSchema2))
             .build());
 

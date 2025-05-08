@@ -32,14 +32,8 @@ public class Task {
     private String description;
     private LocalDate startDate;
     private LocalDate endDate;
-    private Boolean isCompleted;
-
-
-
-
-
-    
+    private Boolean isCompleted;    
     @ManyToOne
     @JoinColumn(name = "task_categoty_id", nullable = false)
-    private TaskCategory taskCategory; // Assuming TaskCategory is another entity that has a many-to-one relationship with Task
+    private TaskCategory taskCategory; 
 }

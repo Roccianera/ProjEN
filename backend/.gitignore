@@ -5,6 +5,8 @@ target/
 !**/src/test/**/target/
 **/src/main/**/resources/secrets.yml
 
+# User-added secrets file
+secrets.yml
 
 ### STS ###
 .apt_generated

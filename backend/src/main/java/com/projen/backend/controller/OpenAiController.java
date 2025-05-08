@@ -32,15 +32,18 @@ public class OpenAiController {
 
     @PostMapping("/project")
     public ResponseEntity<?> createProject(@RequestBody String prompt) throws JsonProcessingException {
-
-        //TODO refactor.
-        
-        String schema = mapperDto.jsonSchemaGenerator(ProjectRequestDto.class);
-        
-        String response =openAiService.generateObjectFromPromptandSchema(prompt,schema);
-        
-        
-        return ResponseEntity.ok().body(response);        
+        try {
+            String schema = mapperDto.jsonSchemaGenerator(ProjectRequestDto.class);
+            String response = openAiService.generateObjectFromPromptandSchema(prompt, schema);
+            
+            if (response.startsWith("Error:")) {
+                return ResponseEntity.badRequest().body(response);
+            }
+            
+            return ResponseEntity.ok().body(response);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body("Error processing AI request: " + e.getMessage());
+        }
     }
     
 
